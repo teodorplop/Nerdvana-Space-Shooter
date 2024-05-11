@@ -13,7 +13,7 @@ public abstract class PlayerAbility : MonoBehaviour
 
     [SerializeField] private float cooldown = 1.0f;
     [SerializeField] private FireMode fireMode;
-    public string key;
+    [SerializeField] private string key;
 
     private float cooldownRemaining;
 

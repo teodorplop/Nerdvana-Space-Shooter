@@ -1,57 +1,97 @@
 using UnityEngine;
 
 /// <summary>
-/// Handles asteroid spawning at the top of the screen.
+/// Handles asteroid spawning at the exact height this object is placed on.
 /// </summary>
 public class AsteroidSpawner : MonoBehaviour
 {
-    [SerializeField] private GameObject[] asteroidPrefabs;
+	/// <summary>
+	/// Array of prefabs of asteroids
+	/// </summary>
+	[SerializeField] private GameObject[] asteroidPrefabs;
 
-    [Header("Spawn Settings")]
-    [SerializeField] private float viewportLeftLimit = 0;
-    [SerializeField] private float viewportRightRight = 1;
-    [SerializeField] private float spawnCooldown = 1;
+	[Header("Spawn Settings")]
+	/// <summary>
+	/// Left limit of viewport to spawn asteroids
+	/// </summary>
+	[SerializeField] private float viewportLeftLimit = 0;
+	/// <summary>
+	/// Right limit of viewport to spawn asteroids
+	/// </summary>
+	[SerializeField] private float viewportRightRight = 1;
+	/// <summary>
+	/// Cooldown between spawn time of asteroids
+	/// </summary>
+	[SerializeField] private float spawnCooldown = 1;
 
-    public Vector2 minDirection;
-    public Vector2 maxDirection;
+	/// <summary>
+	/// The asteroids will spawn with a random direction. This is the min direction value.
+	/// </summary>
+	[SerializeField] private Vector2 minDirection;
+	/// <summary>
+	/// The asteroids will spawn with a random direction. This is the max direction value.
+	/// </summary>
+	[SerializeField] private Vector2 maxDirection;
 
-    private float spawnCooldownRemaining;
+	/// <summary>
+	/// Cooldown timer
+	/// </summary>
+	private float spawnCooldownRemaining;
 
-    private float leftLimit;
-    private float rightLimit;
-    
-    private void Start()
-    {
-        Camera camera = Camera.main;
-        leftLimit = camera.ViewportToWorldPoint(new Vector2(viewportLeftLimit, 0)).x;
-        rightLimit = camera.ViewportToWorldPoint(new Vector2(viewportRightRight, 0)).x;
-    }
-    
-    private void Update()
-    {
-        spawnCooldownRemaining = Mathf.Max(spawnCooldownRemaining - Time.deltaTime, 0);
-        if (spawnCooldownRemaining <= Mathf.Epsilon)
-        {
-            SpawnAsteroid();
-        }
-    }
+	/// <summary>
+	/// Left limit, in world space
+	/// </summary>
+	private float leftLimit;
+	
+	/// <summary>
+	/// Right limit, in world space
+	/// </summary>
+	private float rightLimit;
+	
+	private void Start()
+	{
+		Camera camera = Camera.main;
+		leftLimit = camera.ViewportToWorldPoint(new Vector2(viewportLeftLimit, 0)).x;
+		rightLimit = camera.ViewportToWorldPoint(new Vector2(viewportRightRight, 0)).x;
+	}
+	
+	private void Update()
+	{
+		// Update cooldown
+		spawnCooldownRemaining = Mathf.Max(spawnCooldownRemaining - Time.deltaTime, 0);
+		if (spawnCooldownRemaining <= Mathf.Epsilon)
+		{
+			// If cooldown is ready, let's spawn!
+			SpawnAsteroid();
+		}
+	}
+	
+	/// <summary>
+	/// Spawns a random asteroid
+	/// </summary>
+	private void SpawnAsteroid()
+	{
+		// Instantiate a random asteroid
+		GameObject asteroid = Instantiate(asteroidPrefabs[Random.Range(0, asteroidPrefabs.Length)]);
+		// Give it a random position
+		float x = leftLimit + (rightLimit - leftLimit) * Random.Range(0.0f, 1.0f);
+		asteroid.transform.position = new Vector2(x, transform.position.y);
 
-    private void SpawnAsteroid()
-    {
-        GameObject asteroid = Instantiate(asteroidPrefabs[Random.Range(0, asteroidPrefabs.Length)]);
-        float x = leftLimit + (rightLimit - leftLimit) * Random.Range(0.0f, 1.0f);
-        asteroid.transform.position = new Vector2(x, transform.position.y);
+		// And a random direction
+		asteroid.GetComponent<FollowDirection>().direction = GenerateRandomDirection();
 
-        asteroid.GetComponent<FollowDirection>().direction = GenerateRandomDirection();
+		// Reset cooldown
+		spawnCooldownRemaining = spawnCooldown;
+	}
 
-        spawnCooldownRemaining = spawnCooldown;
-    }
-
-    private Vector2 GenerateRandomDirection()
-    {
-        Vector2 direction;
-        direction.x = Random.Range(minDirection.x, maxDirection.x);
-        direction.y = Random.Range(minDirection.y, maxDirection.y);
-        return direction.normalized;
-    }
+	/// <summary>
+	/// Generate a random direction between minDirection and maxDirection
+	/// </summary>
+	private Vector2 GenerateRandomDirection()
+	{
+		Vector2 direction;
+		direction.x = Random.Range(minDirection.x, maxDirection.x);
+		direction.y = Random.Range(minDirection.y, maxDirection.y);
+		return direction.normalized;
+	}
 }

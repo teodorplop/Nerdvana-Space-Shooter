@@ -5,13 +5,14 @@ using UnityEngine;
 /// </summary>
 public class FollowDirection : MonoBehaviour
 {
-    [SerializeField] public Vector2 direction = Vector2.up;
-    [SerializeField] private float speed = 1;
-    
-    private void Update()
-    {
-        Vector2 position2D = transform.position;
-        position2D += direction * speed * Time.deltaTime;
-        transform.position = position2D;
-    }
+	[SerializeField] private Vector2 direction = Vector2.up;
+	[SerializeField] private float speed = 1;
+	
+	private void Update()
+	{
+		// We move each frame in that direction
+		Vector2 position2D = transform.position;
+		position2D += direction * speed * Time.deltaTime;
+		transform.position = position2D;
+	}
 }

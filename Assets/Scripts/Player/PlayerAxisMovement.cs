@@ -5,12 +5,15 @@ using UnityEngine;
 /// </summary>
 public class PlayerAxisMovement : PlayerMovement
 {
-    [SerializeField] private float speed = 1;
-    
-    protected override Vector2 ComputeMovementDelta(float deltaTime)
-    {
-        Vector2 movement = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-        movement *= speed * deltaTime;
-        return movement;
-    }
+	[SerializeField] private float speed = 1;
+	
+	/// <summary>
+	/// Calculate movement delta based on horizontal & vertical keys
+	/// </summary>
+	protected override Vector2 ComputeMovementDelta(float deltaTime)
+	{
+		Vector2 movement = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+		movement *= speed * deltaTime;
+		return movement;
+	}
 }

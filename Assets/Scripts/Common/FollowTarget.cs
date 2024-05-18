@@ -7,7 +7,7 @@ using UnityEngine;
 /// </summary>
 public class FollowTarget : MonoBehaviour
 {
-	[SerializeField] private Transform target;
+	[SerializeField] public Transform target;
 	[SerializeField] private float speed;
 
 	private void Update()

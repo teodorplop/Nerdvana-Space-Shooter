@@ -5,7 +5,7 @@ using UnityEngine;
 /// </summary>
 public class FollowDirection : MonoBehaviour
 {
-	[SerializeField] private Vector2 direction = Vector2.up;
+	[SerializeField] public Vector2 direction = Vector2.up;
 	[SerializeField] private float speed = 1;
 	
 	private void Update()
